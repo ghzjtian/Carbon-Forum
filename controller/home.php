@@ -14,6 +14,8 @@ if ($MCache && $Page == 1) {
 }
 if (!$TopicsArray) {
 	if ($Page <= 10) {
+	    // http://www.cnblogs.com/cfang/archive/2013/05/22/3092596.html
+        // index 的作用
 		$TopicsArray = $DB->query('SELECT `ID`, `Topic`, `Tags`, `UserID`, `UserName`, `LastName`, `LastTime`, `Replies` 
 			FROM ' . PREFIX . 'topics force index(LastTime) 
 			WHERE IsDel=0 

@@ -6,6 +6,8 @@ $UpdateUserInfoMessage = '';
 $ChangePasswordMessage = '';
 $DoNotNeedOriginalPassword = (stripos($CurUserInfo['Password'], 'zzz')===0);
 
+var_dump($DoNotNeedOriginalPassword);
+
 $CurUserOauthData = $DB->query('SELECT * FROM ' . PREFIX . 'app_users 
 	WHERE UserID=?', array($CurUserID));
 

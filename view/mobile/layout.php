@@ -71,11 +71,15 @@ if($Config['MobileDomainName']){
 			<h1><?php echo $PageTitle; ?></h1>
 			<a class="menuButton" onclick="javascript:slideout.toggle();"></a>
 		</header>
+
+        <!--页面-->
 		<div class="pages">
 			<div data-title="<?php echo $PageTitle; ?>" id="ID<?php echo md5($PageTitle); ?>" class="panel" selected="true">
 				<?php include($ContentFile); ?>
 			</div>
 		</div>
+
+        <!--左侧菜单-->
 		<!-- this is the default left side nav menu.  If you do not want any, do not include these -->
 		<nav id="menu">
 			 <div class="view active" id="navView">
@@ -88,6 +92,9 @@ if($Config['MobileDomainName']){
 			</div>
 		</nav>
 	</div>
+
+
+
 <?php
 if($CurUserID){
 ?>

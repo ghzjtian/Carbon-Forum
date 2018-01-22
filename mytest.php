@@ -6,7 +6,7 @@
  * Time: 15:57
  */
 
-echo phpinfo();
+//echo phpinfo();
 
 echo __DIR__;
 
@@ -83,7 +83,7 @@ var_dump($_SERVER['SCRIPT_NAME']);
 
 echo "<hr/>";
 
-Redirect('localhost');
+//Redirect('localhost');
 
 echo "<hr/>";
 /*<p><label><input type="text" name="VerifyCode" class="w100" onfocus="document.getElementById('Verification_Code_Img').src='<?php echo $Config['WebsitePath']; ?>/seccode.php';document.getElementById('Verification_Code_Img').style.display='inline';" value="" placeholder="<?php echo $Lang['Verification_Code']; ?>" /></label>*/
@@ -91,5 +91,84 @@ echo "<hr/>";
 
 echo "<hr/>";
 
+$DoNotNeedOriginalPassword = (stripos($CurUserInfo['Password'], 'zzz')===0);
 
+var_dump($DoNotNeedOriginalPassword);
+
+echo "<hr/>";
+
+//var_dump($_SERVER['HTTP_CLIENT_IP']);
+var_dump($_SERVER['REQUEST_TIME']);
+
+echo "<hr/>";
+
+function VersionCompare($Version, $OldVersion)
+{
+    $VersionArray = array_map("intval", explode('.', $Version));
+    ;
+    $OldVersionArray = array_map("intval", explode('.', $OldVersion));
+    $NeedToUpdate    = false;
+    foreach ($VersionArray as $Key => $Value) {
+        var_dump('key:'.$Key);
+        var_dump('value:'.$Value);
+
+        if ($VersionArray[$Key] != $OldVersionArray[$Key]) {
+            var_dump($VersionArray[$Key]);
+
+            if ($VersionArray[$Key] > $OldVersionArray[$Key]) {
+                $NeedToUpdate = true;
+            }
+            break;
+        }
+
+        echo "<br/>";
+    }
+    return $NeedToUpdate;
+}
+
+VersionCompare("5.9.0",'5.8.0');
+
+echo "<hr/>";
+
+var_dump($_SERVER['PHP_SELF']);
+
+
+echo "<hr/>";
+
+var_dump($_SERVER['HTTP_HOST']);
+
+echo "<hr/>";
+
+var_dump($_SERVER['HTTP_USER_AGENT']);
+
+
+echo "<hr/>";
+
+echo strtotime("now"), "\n";
+echo strtotime("10 September 2000"), "\n";
+echo strtotime("+1 day"), "\n";
+echo strtotime("+1 week"), "\n";
+echo strtotime("+1 week 2 days 4 hours 2 seconds"), "\n";
+echo strtotime("next Thursday"), "\n";
+echo strtotime("last Monday"), "\n";
+
+
+echo "<hr/>";
+var_dump($_SERVER['QUERY_STRING']);
+
+
+echo "<hr/>";
+
+var_dump($_SERVER['HTTP_X_REQUESTED_WITH']);
+
+
+echo "<hr/>";
+
+var_dump($_SERVER['HTTPS']);
+
+echo "<hr/>";
+
+var_dump(time());
+
+echo "<hr/>";
 

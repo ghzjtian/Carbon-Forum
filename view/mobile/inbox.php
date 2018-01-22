@@ -10,6 +10,8 @@
 		});
 	});
 </script>
+
+
 <template id="MessageTemplate">
 	<div class="message-item message-{{Position}} ">
 		<div class="message-avatar">

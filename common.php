@@ -61,7 +61,7 @@ if (EnableMemcache) {
 	}
 }
 
-//Load configuration
+//Load configuration (From database)
 $Config = array();
 if ($MCache) {
 	$Config = $MCache->get(MemCachePrefix . 'Config');
@@ -380,6 +380,7 @@ function FormHash()
 {
 	global $Config;
 	if (GetCookie('UserCode'))
+	    //return substr(md5("Carbon Forum"."localhost"."AuthorIsLinCanbin"),8,8)
 		return substr(md5($Config['SiteName'] . GetCookie('UserCode') . SALT), 8, 8);
 	else
 		return substr(md5($Config['SiteName'] . SALT), 8, 8);
@@ -451,7 +452,7 @@ function GetCookie($Key, $DefaultValue = false)
 	global $Config, $IsApp;
 	if (!$IsApp) {
 		if (!empty($_COOKIE[$Config['CookiePrefix'] . $Key])) {
-			return $_COOKIE[$Config['CookiePrefix'] . $Key];
+			return $_COOKIE[$Config['CookiePrefix'] . $Key]; //返回了 Cookie 中 CarbonBBS_UserCode 的值 localhost
 		} else if ($DefaultValue) {
 			SetCookies(array(
 				$Key => $DefaultValue
@@ -721,6 +722,10 @@ function XssEscape($html)
 	return $filter->outputHtml();
 }
 
+//Mac Chrome :
+//string(121) "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"
+//Android Chrome:
+//string(143) "Mozilla/5.0 (Linux; Android 7.0; KNT-UL10 Build/HUAWEIKNT-UL10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.98 Mobile Safari/537.36"
 $UserAgent = isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : '';
 if ($UserAgent) {
 	$IsSpider = preg_match('/(bot|crawl|spider|slurp|sohu-search|lycos|robozilla|google)/i', $UserAgent);
@@ -730,7 +735,11 @@ if ($UserAgent) {
 	$IsSpider = false;
 	$IsMobile = false;
 }
+
+//如果是来自 APP 的请求.
 $IsApp = $_SERVER['HTTP_HOST'] == $Config['AppDomainName'] ? true : false;
+
+//判断客户端的来源
 /* Set current template
  * default: PC Version
  * mobile: Mobile Version
@@ -745,6 +754,8 @@ if ($IsApp) {
 	$SignatureKey = Request("Request", "SKey");
 	$SignatureValue = Request("Request", "SValue");
 	$SignatureTime = intval(Request("Request", "STime"));
+
+	//10 Min 的时间有效期
 	if (!$SignatureTime || !$SignatureKey || !$SignatureValue || empty($APISignature[$SignatureKey]) || abs($SignatureTime - $TimeStamp) > 600 || !HashEquals($SignatureValue, md5($SignatureKey . $APISignature[$SignatureKey] . $SignatureTime))) {
 		AlertMsg('403', 'Forbidden', 403);
 	}
@@ -763,6 +774,7 @@ if ($IsApp) {
 $CurView = GetCookie('View', $IsMobile ? 'mobile' : 'desktop');
 $CurIP = CurIP();
 $FormHash = FormHash();
+
 // 限制不能打开.php的网址
 if (strpos($RequestURI, '.php')) {
 	AlertMsg('403', 'Forbidden', 403);
@@ -794,6 +806,7 @@ if ($Config['DaysDate'] != $CurrentDate) {
 		'DateCreated' => $TimeStamp,
 		'DaysDate2' => $Config['DaysDate']
 	));
+
 	UpdateConfig(array(
 		'DaysDate' => $CurrentDate,
 		'DaysTopics' => 0,
@@ -808,11 +821,13 @@ if ($Config['DaysDate'] != $CurrentDate) {
 // Get the infomation of current user
 $CurUserInfo = null; //当前用户信息，Array，以后判断是否登陆使用if($CurUserID)
 $CurUserRole = 0; //0 为游客.
-$CurUserID = intval(GetCookie('UserID'));
+$CurUserID = intval(GetCookie('UserID')); //取得 APP 传送过来的 AuthUserID 的值
 $CurUserName = '';
-$CurUserExpirationTime = intval(GetCookie('UserExpirationTime'));
-$CurUserCode = GetCookie('UserCode');
+$CurUserExpirationTime = intval(GetCookie('UserExpirationTime'));//取得 APP 传送过来的 AuthUserExpirationTime 的值
+$CurUserCode = GetCookie('UserCode'); //取得 APP 传送过来的 AuthUserCode 的值.
 
+// 2678400 = 31 days
+//用户身份验证
 if ($CurUserExpirationTime > $TimeStamp && $CurUserExpirationTime < ($TimeStamp + 2678400) && $CurUserID && $CurUserCode) {
 	$TempUserInfo = array();
 	if ($MCache) {

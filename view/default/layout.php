@@ -147,6 +147,8 @@ if(!$IsAjax){
                     </a>
                 </div>
                 <div class="buttons">
+
+                    <!--搜索栏-->
                     <div class="searchbox">
                         <input type="text" id="SearchInput"
                                onkeydown="javascript:if((event.keyCode==13)&&(this.value!='')){$('#SearchButton').trigger('click');}"
@@ -155,13 +157,19 @@ if(!$IsAjax){
                             <div class="icon icon-search"></div>
                         </a>
                     </div>
+
+
                     <?php
+
+                    //<!--如果是登录用户 -->
                     if ($CurUserID) {
                         ?>
+                        <!--设置-->
                         <a href="<?php echo $Config['WebsitePath']; ?>/settings"
                            title="<?php echo $Lang['Settings']; ?>"<?php echo $UrlPath == 'settings' ? ' class="buttons-active"' : ''; ?>>
                             <div class="icon icon-settings"></div>
                         </a>
+                        <!--通知-->
                         <a href="<?php echo $Config['WebsitePath']; ?>/notifications/list#notifications1"
                            title="<?php echo $Lang['Notifications']; ?>"<?php echo $UrlPath == 'notifications' ? ' class="buttons-active"' : ''; ?>
                            onclick="javascript:ShowNotification(0);">
@@ -169,8 +177,10 @@ if(!$IsAjax){
                             <span class="icon-messages-num" id="MessageNumber">0</span>
                         </a>
                         <?php
+                        //如果是管理员
                         if ($CurUserRole == 5) {
                             ?>
+                            <!--管理员设置-->
                             <a href="<?php echo $Config['WebsitePath']; ?>/dashboard"
                                title="<?php echo $Lang['System_Settings']; ?>"<?php echo $UrlPath == 'dashboard' ? ' class="buttons-active"' : ''; ?>>
                                 <div class="icon icon-dashboard"></div>
@@ -182,6 +192,7 @@ if(!$IsAjax){
                         <a href="<?php echo $Config['WebsitePath']; ?>/new"<?php echo $UrlPath == 'new' ? ' class="buttons-active"' : ''; ?>><?php echo $Lang['Create_New_Topic']; ?></a>
                         <?php
                     } else {
+                        //如果不是登录用户
                         ?>
                         <a href="<?php echo $Config['WebsitePath']; ?>/register"<?php echo $UrlPath == 'register' ? ' class="buttons-active"' : ''; ?>>
                             <?php echo $Lang['Sign_Up']; ?>
@@ -192,6 +203,7 @@ if(!$IsAjax){
                         <?php
                     }
                     ?>
+                    <!--首页-->
                     <!--a href="<?php echo $Config['WebsitePath']; ?>/explore"<?php echo $UrlPath == 'explore' ? ' class="buttons-active"' : ''; ?>>发现</a-->
                     <a href="<?php echo $Config['WebsitePath']; ?>/"<?php echo $UrlPath == 'home' ? ' class="buttons-active"' : ''; ?>>
                         <?php echo $Lang['Home']; ?>

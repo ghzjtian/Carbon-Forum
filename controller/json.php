@@ -78,10 +78,13 @@ switch (Request('Request', 'action')) {
 		echo json_encode($tags);
 		break;
 	
-	
+	//搜索输入框 自动完成功能
 	case 'tag_autocomplete':
 		//Auth(1);
 		$Keyword           = Request('Post', 'query');
+
+//		var_dump($Keyword);
+
 		$Response          = array();
 		$Response['query'] = 'Unit';
 		$Result            = $DB->column("SELECT Title FROM " . PREFIX . "dict WHERE Title LIKE :Keyword limit 10", array(

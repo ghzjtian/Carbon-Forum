@@ -71,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' || $IsApp) {
 			'UserLastIP' => CurIP()
 		), $DBUser['ID']);
 		$TemporaryUserExpirationTime = $Expires * 86400 + $TimeStamp;
+
 		if( !$IsApp ){
 			SetCookies(array(
 				'UserID' => $DBUser['ID'],

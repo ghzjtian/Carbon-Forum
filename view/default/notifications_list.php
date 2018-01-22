@@ -3,6 +3,9 @@ if (!defined('InternalAccess')) exit('error: 403 Access Denied');
 ?>
 <!-- main-content start -->
 <div class="main-content">
+
+
+    <!--这个 script 的用法，作用 ???-->
 <script>
 $(document).ready(function(){
 	$("#notifications").easyResponsiveTabs({
@@ -28,6 +31,8 @@ $(document).ready(function(){
 	?>
 });
 </script>
+
+<!--回复我的-->
 <script type="text/template" id="RepliedToMePostTemplate">
 <div class="comment-item">
 	<div class="user-comment-data">
@@ -50,6 +55,8 @@ $(document).ready(function(){
 </div>
 </script>
 
+
+    <!---提到我的-->
 <script type="text/template" id="MentionedMePostTemplate">
 <div class="comment-item">
 	<div class="user-comment-data">
@@ -72,13 +79,16 @@ $(document).ready(function(){
 </div>
 </script>
 
+    <!--私信箱--->
 <script type="text/template" id="InboxTemplate">
 <div class="comment-item">
+    <!--头像-->
 	<div class="comment-avatar">
 		<a href="<?php echo $Config['WebsitePath']; ?>/u/{{ContactName}}">
 			<img src="<?php echo $Config['WebsitePath']; ?>/upload/avatar/middle/{{ContactID}}.png" alt="{{ContactName}}"/>
 		</a>
 	</div>
+<!--数据-->
 	<div class="comment-data">
 		<div class="comment-content">
 			<div>
@@ -95,9 +105,12 @@ $(document).ready(function(){
 		</div>
 		<div class="c"></div>
 	</div>
+
 	<div class="c"></div>
 </div>
 </script>
+
+<!--实际显示的 Tab bar-->
 	<div id="notifications" class="tab-container">
 		<input type="hidden" id="RepliedToMePage" value="1" />
 		<input type="hidden" id="RepliedToMeLoading" value="0" />

@@ -199,9 +199,9 @@ function CreateNewTopic() {
 		$.ajax({
 			url: WebsitePath + '/new',
 			data: {
-				FormHash: document.NewForm.FormHash.value,
-				Title: document.NewForm.Title.value,
-				Content: UE.getEditor('editor').getContent(),
+				FormHash: document.NewForm.FormHash.value, //表单校验散列
+				Title: document.NewForm.Title.value, // 标题
+				Content: UE.getEditor('editor').getContent(), //内容
 				Tag: $("input[name='Tag[]']").map(function () {
 					return $(this).val();
 				}).get()

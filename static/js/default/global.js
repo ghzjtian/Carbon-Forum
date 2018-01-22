@@ -38,10 +38,10 @@ function renderTemplate(template, list) {
 	return buffer.join("");
 }
 
-function loadMoreReply(forceToShow) {
+function loadMoreReply(forceToShow) {//forceToShow is true
 	var RepliedToMeList = $("#RepliedToMeList");
-	var RepliedToMePage = $("#RepliedToMePage");
-	var RepliedToMeLoading = $("#RepliedToMeLoading");
+	var RepliedToMePage = $("#RepliedToMePage");  //1
+	var RepliedToMeLoading = $("#RepliedToMeLoading");//0
 
 	if (forceToShow || (RepliedToMeList.is(":visible") && RepliedToMeLoading.val() !== "1")) {
 		RepliedToMeLoading.val("1");
@@ -220,6 +220,8 @@ $(function() {
 	$(window).resize(function() {
 		$("#go-to-top").css('left', (Math.max(document.body.clientWidth, 960) - 960) / 2 + 690);
 	});
+
+
 	//Search box
 	$("#SearchButton").click(function() {
 		if ($("#SearchInput").val()) {
@@ -237,6 +239,8 @@ $(function() {
 		minChars: 2,
 		type: 'post'
 	});
+
+
 	//For IE
 	$.ajaxSetup({
 		cache: false

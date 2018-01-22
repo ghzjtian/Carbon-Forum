@@ -1,6 +1,6 @@
 <?php
 require(LanguagePath . 'topic.php');
-$ID   = intval(Request('Request', 'id'));
+$ID   = intval(Request('Request', 'id'));//Topic 的 ID
 $Page = intval(Request('Request', 'page'));
 
 $Topic = $MCache ? $MCache->get(MemCachePrefix . 'Topic_' . $ID) : array();
