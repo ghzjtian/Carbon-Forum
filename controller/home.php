@@ -1,6 +1,6 @@
 <?php
-require(LanguagePath . 'home.php');
-$Page      = intval(Request('Request', 'page'));
+require(LanguagePath . 'home.php');//导入语言包
+$Page      = intval(Request('Request', 'page'));//获得路径上面传过来的
 $TotalPage = ceil($Config['NumTopics'] / $Config['TopicsPerPage']);
 if (($Page < 0 || $Page == 1) && !$IsApp) 
 	Redirect();
@@ -41,5 +41,5 @@ $DB->CloseConnection();
 $PageTitle = $Page > 1 ? ' Page' . $Page . '-' : '';
 $PageTitle .= $Config['SiteName'];
 $PageMetaDesc = htmlspecialchars(mb_substr($Config['SiteDesc'], 0, 150, 'utf-8'));
-$ContentFile  = $TemplatePath . 'home.php';
+$ContentFile  = $TemplatePath . 'home.php';//导入  布局文件.
 include($TemplatePath . 'layout.php');

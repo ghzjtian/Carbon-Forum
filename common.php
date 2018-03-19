@@ -721,7 +721,7 @@ function XssEscape($html)
 	$filter->clean();
 	return $filter->outputHtml();
 }
-
+//iOS : Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1 wechatdevtools/1.02.1802270 MicroMessenger/6.5.7 Language/zh_CN webview/15205629099187467 webdebugger port/63743
 //Mac Chrome :
 //string(121) "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"
 //Android Chrome:

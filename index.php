@@ -17,9 +17,8 @@ if ($Config['WebsitePath']) {
     $ShortRequestURI = $RequestURI;
 }
 
-//var_dump($ShortRequestURI);
-//echo "<hr/>";
 
+//是否找不到指定的路径的指示 indicate
 $NotFound = true;
 $HTTPParameters = array();
 if (in_array($HTTPMethod, array('PUT', 'DELETE', 'OPTIONS'))) {
@@ -93,21 +92,25 @@ $UrlPath = 'home';
 $ParametersVariableName = '_' . $HTTPMethod;
 
 
-//var_dump(Request('Get', 'username'));
-//echo "<hr/>";
-//var_dump($Routes[$HTTPMethod]);
-//echo "<hr/>";
-
 foreach ($Routes[$HTTPMethod] as $URL => $Controller) {
 
     if (preg_match("#^" . $URL . "$#i", $ShortRequestURI, $Parameters)) {
-//        var_dump($Parameters);
+        //$Parameters 会把匹配到的参数保存下来，保存的形式为数组 Array .
+
+        /**
+         *
+         * 如请求：http://carbon2.com/page/1
+         * $HTTPMethod 为 GET
+         * 最终匹配到的 $URL 为 /page/(?<page>[0-9]+) ，$Parameters 为 /page/1,page=>1,1=>1
+         */
         $NotFound = false;
         $Parameters = array_merge($Parameters, $HTTPParameters);
 
-//        var_dump($Parameters);
-//        echo "<hr/>";
-
+        /**
+         *
+         * 把路径中所带有的参数，放到固定的 _GET,_POST 等等的变量 和 _REQUEST 中.
+         * 如这里 http://carbon2.com/page/1 为 _GET['page'] = 1 ,_REQUEST['page'] = 1
+         */
         foreach ($Parameters as $Key => $Value) {
             if (!is_int($Key)) {
                 // _GET['username'] = 'tian'
