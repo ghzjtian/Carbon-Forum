@@ -316,6 +316,7 @@ h2.resp-accordion {
 
 /* other*/
 .wrapper {
+    /*指定需要的最大的宽度*/
     min-width: 980px;
     margin: 0 auto;
     padding: 0;
@@ -335,9 +336,10 @@ h2.resp-accordion {
     z-index: 9999;
 }
 
+/*指定需要的最大的宽度*/
 .nav-panel {
     min-width: 960px;
-    background: #f9f9f9;
+    background: #ffF0f9;
     padding: 0 10px 0 10px;
     border-bottom: 1px solid #4fc3f7;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.07);
@@ -1013,7 +1015,7 @@ img .avatar {
 }
 
 .sider-box {
-    border-bottom: 1px solid #E2E2E2;
+    border-bottom: 1px solid #0f0;
     margin-bottom: 20px;
     background: #fff;
     box-shadow: 2px 2px 5px #d3d6da;

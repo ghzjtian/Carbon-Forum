@@ -31,6 +31,7 @@ class DB
 	private $parameters;
 	public $rowCount   = 0;
 	public $columnCount   = 0;
+//	记录查询的次数.
 	public $querycount = 0;
 
 

@@ -62,10 +62,11 @@ function Pagination($PageUrl, $CurrentPage, $TotalPage)
 
 $LayoutPageTitle = ($CurUserID && $CurUserInfo['NewNotification'] ? str_replace('{{NewMessage}}', $CurUserInfo['NewNotification'], $Lang['New_Message']) : '') . $PageTitle . ($UrlPath == 'home' ? '' : ' - ' . $Config['SiteName']);
 
+//清除缓存
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
-ob_start();
+ob_start();//打开输出控制缓冲.
 if(!$IsAjax){
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -124,6 +125,7 @@ if(!$IsAjax){
     <script type="text/javascript" charset="utf-8" src="<?php echo $Config['LoadJqueryUrl']; ?>"></script>
     <script type="text/javascript" charset="utf-8"
             src="<?php echo $Config['WebsitePath']; ?>/static/js/default/global.js?version=<?php echo CARBON_FORUM_VERSION; ?>"></script>
+    <!--    一秒后，获取 Notification 信息 -->
     <script type="text/javascript">
         <?php if ($CurUserID) {
             echo 'setTimeout(function() {GetNotification();}, 1);';
@@ -149,11 +151,16 @@ if(!$IsAjax){
                 <div class="buttons">
 
                     <!--搜索栏-->
+                    <!-- 如果在 input 框内输入了数据，并按下了 Enter 键,就触发了搜索 -->
                     <div class="searchbox">
                         <input type="text" id="SearchInput"
-                               onkeydown="javascript:if((event.keyCode==13)&&(this.value!='')){$('#SearchButton').trigger('click');}"
-                               placeholder="<?php echo $Lang['Search']; ?>"<?php echo $UrlPath == 'search' && !empty($Keyword) ? ' value="' . $Keyword . '"' : ''; ?> />
+
+                        onkeydown="javascript:if((event.keyCode==13)&&(this.value!='')){$('#SearchButton').trigger('click');}"
+
+                        placeholder="<?php echo $Lang['Search']; ?>
+                        "<?php echo $UrlPath == 'search' && !empty($Keyword) ? ' value="' . $Keyword . '"' : ''; ?> />
                         <a href="###" id="SearchButton">
+<!--                            获取到 search 这个 icon -->
                             <div class="icon icon-search"></div>
                         </a>
                     </div>
@@ -165,13 +172,19 @@ if(!$IsAjax){
                     if ($CurUserID) {
                         ?>
                         <!--设置-->
+                        <!--判断 处于 setting 页,激活状态 == -->
                         <a href="<?php echo $Config['WebsitePath']; ?>/settings"
-                           title="<?php echo $Lang['Settings']; ?>"<?php echo $UrlPath == 'settings' ? ' class="buttons-active"' : ''; ?>>
+                           title="<?php echo $Lang['Settings']; ?>"
+
+                            <?php echo $UrlPath == 'settings' ? ' class="buttons-active"' : ''; ?>>
                             <div class="icon icon-settings"></div>
                         </a>
                         <!--通知-->
+                        <!--判断 处于 notifications 页,激活状态 == -->
                         <a href="<?php echo $Config['WebsitePath']; ?>/notifications/list#notifications1"
-                           title="<?php echo $Lang['Notifications']; ?>"<?php echo $UrlPath == 'notifications' ? ' class="buttons-active"' : ''; ?>
+                           title="<?php echo $Lang['Notifications']; ?>"
+
+                            <?php echo $UrlPath == 'notifications' ? ' class="buttons-active"' : ''; ?>
                            onclick="javascript:ShowNotification(0);">
                             <div class="icon icon-notifications"></div>
                             <span class="icon-messages-num" id="MessageNumber">0</span>
@@ -244,6 +257,8 @@ if(!$IsAjax){
         include($ContentFile);
         ?>
         <div class="c"></div>
+
+<!--        到达顶部-->
         <a style="display: none; " rel="nofollow" href="#top" id="go-to-top">▲</a>
     </div>
     <?php
@@ -257,6 +272,8 @@ if(!$IsAjax){
         <p>
             <?php echo $Config['SiteName']; ?> Powered By © 2006-2016 <a href="http://www.94cb.com" target="_blank">Carbon
                 Forum</a> V<?php echo CARBON_FORUM_VERSION; ?>
+
+<!--            统计数据-->
             <a href="<?php echo $Config['WebsitePath']; ?>/statistics"><?php echo $Lang['Statistics']; ?></a>
             <br/>
             <?php
@@ -265,6 +282,7 @@ if(!$IsAjax){
             ?>
             Processed in <?php echo $TotalTime; ?> ms,
             <?php echo $DB->querycount; ?> SQL Query(s),
+<!--            内存使用量,仅仅报告实际使用的内存量。-->
             <?php echo FormatBytes(memory_get_usage(false)); ?> Memory Usage
         </p>
     </div>

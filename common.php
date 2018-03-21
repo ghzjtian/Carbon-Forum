@@ -20,6 +20,8 @@ define('CARBON_FORUM_VERSION', '5.9.0');
 
 //Initialize timer
 $StartTime = microtime(true);
+
+//请求发起时的时间.
 $TimeStamp = intval($_SERVER['REQUEST_TIME']);
 if ((@include __DIR__ . '/config.php') != 1) { //检查是否有这个文件，如果没有，就到 install 页面 .
 	//Bring user to installation
@@ -34,6 +36,7 @@ require(LibraryPath . 'PDO.class.php');
 require(LibraryPath . 'WhiteHTMLFilterConfig.php');
 require(LibraryPath . 'WhiteHTMLFilter.php');
 
+//打开 数据库的连接
 $DB = new Db(DBHost, DBPort, DBName, DBUser, DBPassword);
 //Initialize MemCache(d) / Redis
 $MCache = false;
@@ -176,6 +179,12 @@ function AddingNotifications($Content, $TopicID, $PostID, $FilterUser = '')
 
 
 //提示信息
+/**
+ * DEMO: AlertMsg($Lang['Error_Unknown_Referer'], $Lang['Error_Unknown_Referer'], 403);
+ * @param $PageTitle
+ * @param $Error
+ * @param int $StatusCode
+ */
 function AlertMsg($PageTitle, $Error, $StatusCode = 200)
 {
 	global $Lang, $CurProtocol, $RequestURI, $UrlPath, $IsAjax, $IsMobile, $IsApp, $DB, $Config, $HotTagsArray, $CurUserID, $CurUserName, $CurUserCode, $CurUserRole, $CurUserInfo, $FormHash, $StartTime, $PageMetaKeyword, $TemplatePath;
@@ -285,6 +294,7 @@ function Auth($MinRoleRequire, $AuthorizedUserID = 0, $StatusRequire = false)
 	if ($CurUserID && $StatusRequire == true && $CurUserInfo['UserAccountStatus'] == 0) {
 		$error = $Lang['Error_Account_navailable'];
 	}
+	//如果正在发起请求的 ID == 已经登录了的 UserId ,就把 error 设置为 false.
 	if ($AuthorizedUserID && $CurUserID && $CurUserID == $AuthorizedUserID) {
 		$error = false;
 	}
@@ -545,10 +555,25 @@ function Redirect($URI = '', $ExitCode = 0)
 }
 
 //来源检查
+/**
+ * 如果不是 APP，就检查 上一个的请求地址的主机和现在的地址的主机是否是一样,防止攻击(可以伪造!!!).
+ * 参考: http://blog.csdn.net/virus026/article/details/17062845
+ * @param $UserHash
+ * @return bool
+ */
 function ReferCheck($UserHash)
 {
 	global $IsApp;
-	if (!$IsApp && (empty($_SERVER['HTTP_REFERER']) || $UserHash != FormHash() || preg_replace("/https?:\/\/([^\:\/]+).*/i", "\\1", $_SERVER['HTTP_REFERER']) !== preg_replace("/([^\:]+).*/", "\\1", $_SERVER['HTTP_HOST'])))
+	$referer = $_SERVER['HTTP_REFERER'];
+	$formhash = FormHash();
+	$serverHost = $_SERVER['HTTP_HOST'];
+	//HTTP_HOST: http://www.zhaoan.org/1809.html
+    $replace1 = preg_replace("/https?:\/\/([^\:\/]+).*/i", "\\1", $_SERVER['HTTP_REFERER']);
+    $replace2 = preg_replace("/([^\:]+).*/", "\\1", $_SERVER['HTTP_HOST']);
+	$preg_re = ( $replace1 !== $replace2 );
+
+//	if (!$IsApp && (empty($_SERVER['HTTP_REFERER']) || $UserHash != FormHash() || preg_replace("/https?:\/\/([^\:\/]+).*/i", "\\1", $_SERVER['HTTP_REFERER']) !== preg_replace("/([^\:]+).*/", "\\1", $_SERVER['HTTP_HOST'])))
+    if(!$IsApp && (empty($referer)||$UserHash  != $formhash || $preg_re))
 		return false;
 	else
 		return true;
@@ -650,6 +675,11 @@ function UpdateConfig($NewConfig)
 
 
 //修改用户资料
+/**
+ * @param $NewUserInfo , array
+ * @param int $UserID
+ * @return array|bool|int|null
+ */
 function UpdateUserInfo($NewUserInfo, $UserID = 0)
 {
 	global $DB, $CurUserID, $CurUserInfo, $MCache;

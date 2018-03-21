@@ -48,7 +48,7 @@ $Routes['GET']['/inbox/(?<inbox_id>.*?)/list(/page/(?<page>[0-9]*))?'] = 'inbox_
 $Routes['GET']['/inbox/(?<inbox_id>.*?)'] = 'inbox_view';
 $Routes['POST']['/inbox/(?<inbox_id>.*?)'] = 'inbox_create';
 $Routes['DELETE']['/inbox/(?<inbox_id>.*?)/delete/(?<message_id>[0-9]+)'] = 'inbox_delete';
-$Routes['POST']['/json/(?<action>[0-9a-z_\-]+)'] = 'json';
+$Routes['POST']['/json/(?<action>[0-9a-z_\-]+)'] = 'json';//前面为什么可以加 <action> ??? ,变为一个 key ？？？
 $Routes['GET']['/json/(?<action>[0-9a-z_\-]+)'] = 'json';
 $Routes['GET']['/login'] = 'login';
 $Routes['POST']['/login'] = 'login';
@@ -123,12 +123,6 @@ foreach ($Routes[$HTTPMethod] as $URL => $Controller) {
     }
 }
 
-//var_dump(Request('Get', 'username'));
-//echo "<hr/>";
-
-//echo "<hr/>";
-//var_dump($UrlPath);
-//echo "<hr/>";
 
 if ($NotFound === true) {
     require(__DIR__ . '/404.php');
@@ -143,6 +137,5 @@ if ($Config['MobileDomainName'] && $_SERVER['HTTP_HOST'] != $Config['MobileDomai
     exit();
 }
 
-//var_dump(Request('Get', 'username'));
 
 require(__DIR__ . '/controller/' . $UrlPath . '.php');

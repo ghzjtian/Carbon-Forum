@@ -83,6 +83,7 @@ main-content start
     <?php
     include($TemplatePath . 'sider.php');
     ?>
+<!--    站内统计-->
     <div class="sider-box">
         <div class="sider-box-title"><?php echo $Lang['Website_Statistics']; ?></div>
         <div class="sider-box-content">

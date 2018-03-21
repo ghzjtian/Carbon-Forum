@@ -419,8 +419,10 @@ function ManageCallback(TargetTag) {
 
 //管理
 //onclick="javascript:Manage(<?php echo $UserInfo['ID']; ?>, 4, 3, false, this)
+//(<?php echo $CurUserID; ?>, 3, 'ResetAvatar', true, this)
 function Manage(ID, Type, Action, NeedToConfirm, TargetTag) {
 	var Lang = Lang || window.Lang;
+	// console.log("ID:"+ID+" Type:"+Type+" Action:"+Action+" NeedToConfirm:"+NeedToConfirm);
 	if (NeedToConfirm ? confirm(Lang['Confirm_Operation']) : true) {
 		$(TargetTag).text("Loading");
 		var CallbackObj = new ManageCallback(TargetTag);

@@ -35,7 +35,9 @@ if (!defined('InternalAccess')) exit('error: 403 Access Denied');
                         <img id="CurAvatar"
                              src="<?php echo $Config['WebsitePath']; ?>/upload/avatar/large/<?php echo $CurUserID; ?>.png?cache=<?php echo $TimeStamp; ?>"
                              alt="<?php echo $CurUserName; ?>"/>
-                        <p><a href="###"
+                        <p>
+                            <!-- 点击 重置头像 后，AXJX 的请求 -->
+                            <a href="###"
                               onclick="javascript:Manage(<?php echo $CurUserID; ?>, 3, 'ResetAvatar', true, this);"><?php echo $Lang['Reset_Avatar']; ?></a>
                         </p>
                     </div>

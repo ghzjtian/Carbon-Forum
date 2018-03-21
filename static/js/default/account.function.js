@@ -21,6 +21,7 @@ function CheckUserName() {
 			type: 'post',
 			dataType: 'json',
 			success: function(Json) {
+                // 返回 1 为已存在，0为未存在
 				if (Json.Status == 1) {
 					$("#UserName").addClass("inputnotice");
 				} else {
