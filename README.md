@@ -1,3 +1,24 @@
+
+
+### 1.源码的解读
+* 1.GitHub: https://github.com/ghzjtian/Carbonforum
+* 2.GitBook: https://cengtian.gitbooks.io/carbonforum/content/
+
+### 2.里面所用到的ID
+* 1.#ID
+    user : tian , tian1 , tian2
+    
+    user psw: 1112300
+
+### 3.强制使得 github 版本回退
+* https://stackoverflow.com/questions/4372435/how-can-i-rollback-a-github-repository-to-a-specific-commit
+
+
+***
+***
+***
+
+
 # Carbon-Forum    [![Build Status](https://travis-ci.org/lincanbin/Carbon-Forum.svg?branch=develop)](https://travis-ci.org/lincanbin/Carbon-Forum)
 
 A high performance open-source forum software written in PHP.
