@@ -23,8 +23,9 @@ $StartTime = microtime(true);
 
 //请求发起时的时间.
 $TimeStamp = intval($_SERVER['REQUEST_TIME']);
-if ((@include __DIR__ . '/config.php') != 1) { //检查是否有这个文件，如果没有，就到 install 页面 .
-	//Bring user to installation
+
+//检查是否有这个文件，如果没有即表示是第一次访问，需要配置 安装信息，就到 install 页面 .
+if ((@include __DIR__ . '/config.php') != 1) { 	//Bring user to installation
 	header("Location: install/");
 	exit(); //No errors
 }
@@ -90,6 +91,8 @@ $PHPSelf = addslashes(htmlspecialchars($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF
 $UrlPath = '';
 //For IIS ISAPI_Rewrite
 $RequestURI = str_ireplace('?' . (isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''), '', (isset($_SERVER['HTTP_X_REWRITE_URL']) ? $_SERVER['HTTP_X_REWRITE_URL'] : $_SERVER['REQUEST_URI']));
+
+// $_SERVER['HTTP_X_REQUESTED_WITH'] 判断是否是ajax请求
 $IsAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 $CurProtocol = IsSSL() ? 'https://' : 'http://';
 
@@ -456,7 +459,7 @@ function GetTagIcon($TagID, $Icon, $TagName, $Size = 'middle')
 	return '<img src="' . $Config['WebsitePath'] . '/upload/tag/' . $Size . '/' . ($Icon ? $TagID : '0') . '.png" alt="' . $TagName . '"/>';
 }
 
-//获取Cookie
+//获取Cookie 或设置 value
 function GetCookie($Key, $DefaultValue = false)
 {
 	global $Config, $IsApp;
@@ -541,7 +544,7 @@ function LogOut()
 		'UserID' => '',
 		'UserExpirationTime' => '',
 		'UserCode' => ''
-	), 1);
+	), -1); //应该把时间设置为过去的时间才对.
 	$CurUserID = 0;
 }
 
@@ -556,7 +559,7 @@ function Redirect($URI = '', $ExitCode = 0)
 
 //来源检查
 /**
- * 如果不是 APP，就检查 上一个的请求地址的主机和现在的地址的主机是否是一样,防止攻击(可以伪造!!!).
+ * 如果不是 APP，就检查 上一个的请求地址的主机和现在的地址的主机是否是一样,防止攻击(可以伪造!!!,并不可靠!).
  * 参考: http://blog.csdn.net/virus026/article/details/17062845
  * @param $UserHash
  * @return bool
@@ -758,6 +761,7 @@ function XssEscape($html)
 //string(143) "Mozilla/5.0 (Linux; Android 7.0; KNT-UL10 Build/HUAWEIKNT-UL10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.98 Mobile Safari/537.36"
 $UserAgent = isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : '';
 if ($UserAgent) {
+    //是否是网络爬虫
 	$IsSpider = preg_match('/(bot|crawl|spider|slurp|sohu-search|lycos|robozilla|google)/i', $UserAgent);
 	$IsMobile = preg_match('/(iPod|iPhone|Android|Opera Mini|BlackBerry|webOS|UCWEB|Blazer|PSP)/i', $UserAgent);
 } else {
@@ -765,6 +769,7 @@ if ($UserAgent) {
 	$IsSpider = false;
 	$IsMobile = false;
 }
+
 
 //如果是来自 APP 的请求.
 $IsApp = $_SERVER['HTTP_HOST'] == $Config['AppDomainName'] ? true : false;
@@ -792,6 +797,7 @@ if ($IsApp) {
 } elseif ($_SERVER['HTTP_HOST'] == $Config['MobileDomainName'] || (!$Config['MobileDomainName'] && $IsMobile)) {
 	$TemplatePath = __DIR__ . '/view/mobile/';
 	$Style = 'Mobile';
+	//X-Frame-Options解析: http://caibaojian.com/x-frame-options.html
 	header('X-Frame-Options: SAMEORIGIN');
 } else {
 	$TemplatePath = __DIR__ . '/view/default/';
@@ -802,7 +808,7 @@ if ($IsApp) {
 }
 
 $CurView = GetCookie('View', $IsMobile ? 'mobile' : 'desktop');
-$CurIP = CurIP();
+$CurIP = CurIP(); //取得请求的 ID 地址.
 $FormHash = FormHash();
 
 // 限制不能打开.php的网址
@@ -851,12 +857,12 @@ if ($Config['DaysDate'] != $CurrentDate) {
 // Get the infomation of current user
 $CurUserInfo = null; //当前用户信息，Array，以后判断是否登陆使用if($CurUserID)
 $CurUserRole = 0; //0 为游客.
-$CurUserID = intval(GetCookie('UserID')); //取得 APP 传送过来的 AuthUserID 的值
+$CurUserID = intval(GetCookie('UserID')); //取得 Cookie 中保存的 AuthUserID 的值
 $CurUserName = '';
-$CurUserExpirationTime = intval(GetCookie('UserExpirationTime'));//取得 APP 传送过来的 AuthUserExpirationTime 的值
-$CurUserCode = GetCookie('UserCode'); //取得 APP 传送过来的 AuthUserCode 的值.
+$CurUserExpirationTime = intval(GetCookie('UserExpirationTime'));//取得  Cookie 中保存的 AuthUserExpirationTime 的值
+$CurUserCode = GetCookie('UserCode'); //取得  Cookie 中保存的 AuthUserCode 的值.
 
-// 2678400 = 31 days
+// 2678400 = 31 days , 86400 = 24*60*60
 //用户身份验证
 if ($CurUserExpirationTime > $TimeStamp && $CurUserExpirationTime < ($TimeStamp + 2678400) && $CurUserID && $CurUserCode) {
 	$TempUserInfo = array();
@@ -871,6 +877,7 @@ if ($CurUserExpirationTime > $TimeStamp && $CurUserExpirationTime < ($TimeStamp 
 			$MCache->set(MemCachePrefix . 'UserInfo_' . $CurUserID, $TempUserInfo, 86400);
 		}
 	}
+	//验证数据库中保存的信息是否是跟 现在提交的用户的信息是一样的.
 	if ($TempUserInfo && HashEquals(md5($TempUserInfo['Password'] . $TempUserInfo['Salt'] . $CurUserExpirationTime . SALT), $CurUserCode)) {
 		$CurUserName = $TempUserInfo['UserName'];
 		$CurUserRole = $TempUserInfo['UserRoleID'];

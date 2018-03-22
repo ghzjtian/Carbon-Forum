@@ -415,6 +415,11 @@ class MDAvtars
 		imagedestroy($this->Avatar);
 	}
 
+    /**
+     * 直接输出到屏幕.
+     * @param int $AvatarSize
+     * @return bool
+     */
 	public function Output2Browser($AvatarSize=0)
 	{
 		if(!$AvatarSize){

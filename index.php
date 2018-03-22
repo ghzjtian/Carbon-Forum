@@ -129,6 +129,8 @@ if ($NotFound === true) {
     exit();
 }
 
+
+//如果是有设置了另外的 mobile 服务器的域名.
 if ($Config['MobileDomainName'] && $_SERVER['HTTP_HOST'] != $Config['MobileDomainName'] && $CurView == 'mobile' && !$IsApp && $UrlPath != 'view') {
     //如果是手机，则跳转到移动版
     header("HTTP/1.1 302 Moved Temporarily");

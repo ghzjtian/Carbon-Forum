@@ -12,6 +12,11 @@ if(!$IsAjax){
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
     <meta http-equiv="Cache-Control" content="no-siteapp"/>
     <meta http-equiv="cleartype" content="on"/>
+    <!--
+    The width=device-width part sets the width of the page to follow the screen-width of the device (which will vary depending on the device).
+    The initial-scale=1.0 part sets the initial zoom level when the page is first loaded by the browser.
+    more: https://www.w3schools.com/tags/tag_meta.asp
+    -->
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui"/>
     <meta name="MobileOptimized" content="320"/>
@@ -42,7 +47,8 @@ if(!$IsAjax){
           href="<?php echo $Config['WebsitePath']; ?>/static/css/mobile/style.css?version=<?php echo CARBON_FORUM_VERSION; ?>"/>
     <link rel="search" type="application/opensearchdescription+xml"
           title="<?php echo mb_substr($Config['SiteName'], 0, 15, 'utf-8'); ?>"
-          href="<?php echo $Config['WebsitePath']; ?>/search.xml"/>]
+          href="<?php echo $Config['WebsitePath']; ?>/search.xml"/>
+    ]
     <script type="text/javascript">
         var Prefix = "<?php echo PREFIX; ?>";
         var WebsitePath = "<?php echo $Config['WebsitePath'];?>";
@@ -56,20 +62,16 @@ if(!$IsAjax){
             src="<?php echo $Config['WebsitePath']; ?>/language/<?php echo ForumLanguage; ?>/global.js?version=<?php echo CARBON_FORUM_VERSION; ?>"></script>
     <?php
     if ($Config['PageHeadContent']) {
-        echo $Config['PageHeadContent'] . '
-';
+        echo $Config['PageHeadContent'] . '';
     }
     if (isset($PageMetaKeyword) && $PageMetaKeyword) {
-        echo '	<meta name="keywords" content="', $PageMetaKeyword, '" />
-';
+        echo '	<meta name="keywords" content="', $PageMetaKeyword, '" />';
     }
     if (isset($PageMetaDesc) && $PageMetaDesc) {
-        echo '	<meta name="description" content="', $PageMetaDesc, '" />
-';
+        echo '	<meta name="description" content="', $PageMetaDesc, '" />';
     }
     if (IsSSL()) {
-        echo '	<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
-';
+        echo '	<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />';
     }
     if ($Config['MobileDomainName']) {
         ?>
@@ -216,6 +218,7 @@ if ($CurUserID) {
     </script>
     <?php
 }
+
 $MicroTime = explode(' ', microtime());
 $TotalTime = number_format((microtime(true) - $StartTime) * 1000, 3);
 header("X-Response-Time: " . $TotalTime . "ms");

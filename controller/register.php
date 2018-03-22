@@ -8,7 +8,6 @@ $Error    = '';
 $ErrorCode     = 104000;
 if ($_SERVER['REQUEST_METHOD'] == 'POST' || $IsApp) {
 
-//    var_dump(Request('Post', 'FormHash'));
 
 	if (!ReferCheck(Request('Post', 'FormHash'))) {
 		AlertMsg($Lang['Error_Unknown_Referer'], $Lang['Error_Unknown_Referer'], 403);
@@ -16,8 +15,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' || $IsApp) {
 	$UserName   = strtolower(Request('Post', 'UserName'));
 	$Email      = strtolower(Request('Post', 'Email'));
 	$Password   = Request('Post', 'Password');
-	$VerifyCode = intval(Request('Post', 'VerifyCode'));
+	$VerifyCode = Request('Post', 'VerifyCode');
 	do{
+	    //是否关闭了注册功能?
 		if ($Config['CloseRegistration'] === 'true') {
 			$Error     = $Lang['Prohibit_Registration'];
 			$ErrorCode = 104006;
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' || $IsApp) {
 			break;
 		}
 		session_write_close();
-		if ($VerifyCode !== $TempVerificationCode) {
+		if (intval($VerifyCode) !== $TempVerificationCode) {
 			$Error = $Lang['VerificationCode_Error'];
 			$ErrorCode     = 104004;
 			break;
@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' || $IsApp) {
 		$NewUserSalt     = mt_rand(100000, 999999);
 		$NewUserPassword = md5($Password . $NewUserSalt);
 		$NewUserData     = array(
-			'ID' => null,
+			'ID' => null,//ID 为 AUTO_INCREMENT
 			'UserName' => $UserName,
 			'Salt' => $NewUserSalt,
 			'Password' => $NewUserPassword,
@@ -113,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' || $IsApp) {
 			'UserAccountStatus' => 1,
 			'Birthday' => date("Y-m-d", $TimeStamp)
 		);
-		
+		//把数据插到数据库.
 		$DB->query('INSERT INTO `' . PREFIX . 'users`
 			(
 				`ID`, `UserName`, `Salt`, `Password`, `UserMail`, 
@@ -143,7 +143,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' || $IsApp) {
 			"DaysUsers" => $Config["DaysUsers"] + 1
 		);
 		UpdateConfig($NewConfig);
+		//24*60*60=86400
 		$TemporaryUserExpirationTime = 30 * 86400 + $TimeStamp;//默认保持30天登陆状态
+        //如果是第一个注册的人，就把他的权限升级为管理员权限.
 		if ($CurUserID == 1) {
 			$DB->query("UPDATE `" . PREFIX . "users` SET UserRoleID=5 WHERE `ID`=?", array(
 				$CurUserID
@@ -151,6 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' || $IsApp) {
 		}
 
 		//生成并保存头像(以用户名的首字母为中心)
+        //查看 gd 组件是否已经加载.
 		if (extension_loaded('gd')) {
 			require(LibraryPath . "MaterialDesign.Avatars.class.php");
 			$Avatar = new MDAvtars(mb_substr($UserName, 0, 1, "UTF-8"), 256);

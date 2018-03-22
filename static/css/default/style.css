@@ -123,7 +123,7 @@ input[type="text"]:focus, .input[type="text"]:hover, input[type="password"]:focu
     margin-bottom: 0;
     border-bottom: 2px solid #33B5E5;
 }
-
+/* 输入的数据有错误时的提醒功能. */
 .inputnotice {
     color: #db4437 !important;
     margin-bottom: 0 !important;

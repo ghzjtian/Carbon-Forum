@@ -65,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 						$Message = $Lang['Email_Has_Been_Sent'];
 					}
 				} else {
+				    //邮箱错误
 					$UserMail = preg_replace('/([\w\-\.]{1})([\w\-\.]{0,})@([\w\-\.]+(\.\w+)+)$/', '\1*****@\3', $UserInfo['UserMail']);
 					$Message  = str_replace('{{UserMail}}', $UserMail, $Lang['Email_Error']);
 				}

@@ -1,4 +1,5 @@
 <?php
+//当用户点击了忘记密码邮件中的重设密码后，跳转到此页.
 require(LanguagePath . 'reset_password.php');
 $AccessToken      = base64_decode(Request('Request', 'access_token'));
 $AccessTokenArray = $AccessToken ? explode('|', $AccessToken) : false;
@@ -10,6 +11,8 @@ if (count($AccessTokenArray) === 3) {
 } else {
 	AlertMsg('Bad Request', 'Bad Request', 400);
 }
+
+//验证 时间是否已经过期了 或者 时间被恶意写入很大的值.
 if ($TokenExpirationTime < $TimeStamp || $TokenExpirationTime >= ($TimeStamp + 7200)) {
 	AlertMsg($Lang['Page_Has_Expired'], $Lang['Page_Has_Expired']);
 }
@@ -17,10 +20,15 @@ $UserInfo = array();
 $UserInfo = $DB->row('SELECT * FROM ' . PREFIX . 'users Where UserName=:UserName', array(
 	'UserName' => $UserName
 ));
+//验证该用户是否不存在
 if (!$UserInfo) {
 	AlertMsg('404 Not Found', '404 Not Found', 404);
 } else {
-	if (HashEquals(md5($UserInfo['Password'] . $UserInfo['Salt'] . md5($TokenExpirationTime) . md5(SALT)), $Token)) {
+    //验证 Token 是否正确.
+    $correctToken = md5($UserInfo['Password'] . $UserInfo['Salt'] . md5($TokenExpirationTime) . md5(SALT));
+	if (HashEquals($correctToken, $Token)) {
+
+	    //在 重置密码页，填写了相关的资料并且提交后
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			if (!ReferCheck(Request('Post', 'FormHash'))) {
 				AlertMsg($Lang['Error_Unknown_Referer'], $Lang['Error_Unknown_Referer'], 403);
